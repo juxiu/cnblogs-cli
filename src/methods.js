@@ -5,32 +5,6 @@ const fm = require('front-matter')
 const config = require('./config.json')
 const imageinfo = require('imageinfo')
 const path = require('path')
-// // 删除博客
-// function deletePost(params, options) {
-//     params = { ...config, ...params }
-//     const xml = `<?xml version="1.0"?>
-// <methodCall>
-//   <methodName>blogger.deletePost</methodName>
-//   <params>
-//     <param>
-//         <value><string></string></value>
-//     </param>
-//     <param>
-//         <value><string>${params.postid}</string></value>
-//     </param>
-//     <param>
-//         <value><string>${params.username}</string></value>
-//     </param>
-//     <param>
-//         <value><string>${params.password}</string></value>
-//     </param>
-//     <param>
-//         <value><boolean>0</boolean></value>
-//     </param>
-//   </params>
-// </methodCall>`
-//     return request(params.url, xml, options)
-// }
 // 获取用户博客信息
 function getUsersBlogs(params, options) {
     params = { ...config, ...params }
@@ -59,9 +33,7 @@ async function newPost(params, options) {
     let data = fm(fs.readFileSync(params.filePath, 'utf8'))
     data.body = await replaceImgUrl(data.body)
     if (data.frontmatter) {
-        const writeData = `---\n${data.frontmatter}\n---\n
-    ${data.body}
-        `
+        const writeData = `---\n${data.frontmatter}\n---\n${data.body}`
         // 将文件中的本地链接替换成网络图片，下次修改上传时无需重新上传
         fs.writeFileSync(path.resolve(process.cwd(), params.filePath), writeData)
     }
@@ -234,7 +206,7 @@ function deletePost(params, options) {
         <value><string></string></value>
     </param>
     <param>
-        <value><string>${'16327454'}</string></value>
+        <value><string>${params.postid}</string></value>
     </param>
     <param>
         <value><string>${params.username}</string></value>

@@ -2,6 +2,7 @@
 const program = require('commander')
 program.version(require('../package.json').version)
 const log = require('../lib/log')
+
 program
     .command('publish <fileName>')
     .alias('p')
@@ -19,6 +20,15 @@ program
         const resetPassword = require('../lib/resetPassword')
         await resetPassword()
         log.info('success', 'Reset successful!')
+    })
+
+program
+    .command('delete <fileName>')
+    .alias('d')
+    .description('delete blog')
+    .action(async (fileName) => {
+        const deleteBlog = require('../lib/deleteBlog')
+        deleteBlog(fileName)
     })
 
 program.parse(process.argv);
