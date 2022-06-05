@@ -22,5 +22,9 @@
     "npmlog": "^6.0.2",
     "ora": "^5.1.0",
     "xml2js": "^0.4.23"
+  },
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/juxiu/cnblogs-cli.git"
   }
 }
