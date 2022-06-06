@@ -15,6 +15,8 @@
   "dependencies": {
     "axios": "^0.27.2",
     "chalk": "^4.1.2",
+    "chokidar": "^3.5.3",
+    "clear": "^0.1.0",
     "commander": "^9.3.0",
     "front-matter": "^4.0.2",
     "imageinfo": "^1.0.4",
@@ -23,8 +25,8 @@
     "ora": "^5.1.0",
     "xml2js": "^0.4.23"
   },
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/juxiu/cnblogs-cli.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/juxiu/cnblogs-cli.git"
   }
 }

@@ -26,7 +26,6 @@ function getUsersBlogs(params, options) {
     return request(params.url, xml, options)
 }
 // 创建新博
-
 async function newPost(params, options) {
     params = { ...config, ...params }
     const fileName = path.parse(params.filePath).name

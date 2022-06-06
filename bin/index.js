@@ -19,7 +19,6 @@ program
     .action(async () => {
         const resetPassword = require('../lib/resetPassword')
         await resetPassword()
-        log.info('success', 'Reset successful!')
     })
 
 program
