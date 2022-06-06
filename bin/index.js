@@ -31,4 +31,12 @@ program
         deleteBlog(fileName)
     })
 
+program
+    .command('init')
+    .description('init')
+    .action(async () => {
+        const init = require('../lib/init')
+        init()
+    })
+
 program.parse(process.argv);
