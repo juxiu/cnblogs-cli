@@ -23,6 +23,7 @@
     "inquirer": "^8.2.4",
     "npmlog": "^6.0.2",
     "ora": "^5.1.0",
+    "shelljs": "^0.8.5",
     "xml2js": "^0.4.23"
   },
   "repository": {

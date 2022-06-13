@@ -37,5 +37,12 @@ program
         const init = require('../lib/init')
         init()
     })
+program
+    .command('push <commit>')
+    .description('push')
+    .action(async (commit) => {
+        const pushBlogs = require('../lib/pushBlogs')
+        pushBlogs(commit)
+    })
 
 program.parse(process.argv);
