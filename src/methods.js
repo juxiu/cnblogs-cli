@@ -5,6 +5,7 @@ const fm = require('front-matter')
 const config = require('./config.json')
 const imageinfo = require('imageinfo')
 const path = require('path')
+const { isArray } = require('util')
 // 获取用户博客信息
 function getUsersBlogs(params, options) {
     params = { ...config, ...params }
@@ -25,67 +26,7 @@ function getUsersBlogs(params, options) {
 </methodCall>`
     return request(params.url, xml, options)
 }
-// 创建新博
-async function newPost(params, options) {
-    params = { ...config, ...params }
-    const fileName = path.parse(params.filePath).name
-    let data = fm(fs.readFileSync(params.filePath, 'utf8'))
-    data.body = await replaceImgUrl(data.body)
-    if (data.frontmatter) {
-        const writeData = `---\n${data.frontmatter}\n---\n${data.body}`
-        // 将文件中的本地链接替换成网络图片，下次修改上传时无需重新上传
-        fs.writeFileSync(path.resolve(process.cwd(), params.filePath), writeData)
-    }
-    const xml = `<?xml version="1.0"?>
-<methodCall>
-  <methodName>metaWeblog.newPost</methodName>
-  <params>
-    <param>
-        <value><string></string></value>
-    </param>
-    <param>
-        <value><string>${params.username}</string></value>
-    </param>
-    <param>
-        <value><string>${params.password}</string></value>
-    </param>
-    <param>
-         <value>
-                <struct>
-                    <member>
-                        <name>description</name>
-                        <value>
-                            <string>${data.body}</string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>title</name>
-                        <value>
-                            <string>${data.attributes.title || fileName}</string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>categories</name>
-                        <value>
-                            <array>
-                                <data>
-                                    <value>
-                                        <string>[Markdown]</string>
-                                    </value>
-                                </data>
-                            </array>
-                        </value>
-                    </member>
-                </struct>
-            </value>
-    </param>
-    <param>
-        <value><boolean>1</boolean></value>
-    </param>
-  </params>
-</methodCall>`
-    return request(params.url, xml, options)
-}
+
 // 替换博客中的本地图片为网络地址
 async function replaceImgUrl(fileDataStr) {
     const imgReg = /\!\[.+\]\(([\.\/|\.\.\/].+)\)/g
@@ -277,17 +218,27 @@ function newCategory(params, options) {
 </methodCall>`
     return request(params.url, xml, options)
 }
-
-async function editPost(params, options) {
+// 创建新博
+async function newPost(params, options) {
     params = { ...config, ...params }
+    const fileName = path.parse(params.filePath).name
     let data = fm(fs.readFileSync(params.filePath, 'utf8'))
+    // 如果有id则调用编辑接口
+    if (data.attributes.postid) {
+        return editPost({ ...params, data })
+    }
     data.body = await replaceImgUrl(data.body)
+    // if (data.frontmatter) {
+    //     const writeData = `---\n${data.frontmatter}\n---\n${data.body}`
+    //     // 将文件中的本地链接替换成网络图片，下次修改上传时无需重新上传
+    //     fs.writeFileSync(path.resolve(process.cwd(), params.filePath), writeData)
+    // }
     const xml = `<?xml version="1.0"?>
 <methodCall>
-  <methodName>metaWeblog.editPost</methodName>
+  <methodName>metaWeblog.newPost</methodName>
   <params>
     <param>
-        <value><string>${params.postid}</string></value>
+        <value><string></string></value>
     </param>
     <param>
         <value><string>${params.username}</string></value>
@@ -307,7 +258,71 @@ async function editPost(params, options) {
                     <member>
                         <name>title</name>
                         <value>
-                            <string>${data.attributes.title || ''}</string>
+                            <string>${data.attributes.title || fileName}</string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>categories</name>
+                        <value>
+                            <array>
+                                <data>
+                                    <value>
+                                        <string>[Markdown]</string>
+                                    </value>
+                                </data>
+                            </array>
+                        </value>
+                    </member>
+                </struct>
+            </value>
+    </param>
+    <param>
+        <value><boolean>1</boolean></value>
+    </param>
+  </params>
+</methodCall>`
+    let res = await request(params.url, xml, options)
+    if (!res.faultCode) {
+        data.frontmatter = `${data.frontmatter ? data.frontmatter + '\n' : ''}postid: ${res}`
+        const writeData = `---\n${data.frontmatter}\n---\n${data.body}`
+        // 将文件中的本地链接替换成网络图片，下次修改上传时无需重新上传
+        fs.writeFileSync(path.resolve(process.cwd(), params.filePath), writeData)
+    }
+    return Promise.resolve(res)
+}
+
+async function editPost(params, options) {
+    params = { ...config, ...params }
+    // let data = fm(fs.readFileSync(params.filePath, 'utf8'))
+    const { data } = params;
+    const fileName = path.parse(params.filePath).name
+    data.body = await replaceImgUrl(data.body)
+    const xml = `<?xml version="1.0"?>
+<methodCall>
+  <methodName>metaWeblog.editPost</methodName>
+  <params>
+    <param>
+        <value><string>${data.attributes.postid}</string></value>
+    </param>
+    <param>
+        <value><string>${params.username}</string></value>
+    </param>
+    <param>
+        <value><string>${params.password}</string></value>
+    </param>
+    <param>
+         <value>
+                <struct>
+                    <member>
+                        <name>description</name>
+                        <value>
+                            <string>${data.body}</string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>title</name>
+                        <value>
+                            <string>${data.attributes.title || fileName}</string>
                         </value>
                     </member>
                     <member>
