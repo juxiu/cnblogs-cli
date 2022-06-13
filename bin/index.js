@@ -31,14 +31,14 @@ program
     })
 
 program
-    .command('init')
+    .command('init [num]')
     .description('init')
-    .action(async () => {
+    .action(async (num) => {
         const init = require('../lib/init')
-        init()
+        init(num)
     })
 program
-    .command('push <commit>')
+    .command('push [commit]')
     .description('push')
     .action(async (commit) => {
         const pushBlogs = require('../lib/pushBlogs')

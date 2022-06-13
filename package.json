@@ -1,6 +1,6 @@
 {
   "name": "cnblogs-cli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "blog.js",
   "bin": {
