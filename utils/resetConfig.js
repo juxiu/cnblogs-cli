@@ -8,11 +8,11 @@ const resetConfig = async () => {
     const res = await inquirer.prompt([{
         name: 'username',
         type: 'input',
-        message: 'Please enter your cnblogs username:'
+        message: '博客园MetaWeblog登录用户名:'
     }, {
         name: 'key',
         type: 'input',
-        message: '博客园访问:'
+        message: '博客园访问令牌:'
     }, {
         name: 'url',
         type: 'input',
