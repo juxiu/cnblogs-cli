@@ -48,14 +48,19 @@ program
 //         await resetPassword()
 //     })
 
+program
+    .command('push [commit]')
+    .description('push')
+    .action(async (commit) => {
+        const pushBlogs = require('./lib/pushBlogs')
+        pushBlogs(commit)
+    })
 
-
-// program
-//     .command('push [commit]')
-//     .description('push')
-//     .action(async (commit) => {
-//         const pushBlogs = require('../lib/pushBlogs')
-//         pushBlogs(commit)
-//     })
+program
+    .command('aaa')
+    .description('push')
+    .action(async (commit) => {
+        console.log('dddddd');
+    })
 
 program.parse(process.argv);
