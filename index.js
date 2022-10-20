@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const program = require('commander')
+const { config } = require('shelljs')
 program.version(require('./package.json').version)
 // const log = require('../lib/log')
 
@@ -57,10 +58,21 @@ program
     })
 
 program
-    .command('aaa')
-    .description('push')
+    .command('userinfo')
+    .alias('info')
+    .description('查看本地配置信息')
     .action(async (commit) => {
-        console.log('dddddd');
+        const fs = require('fs')
+        const path = require('path')
+        const chalk = require('chalk')
+        const file = await fs.promises.access(path.resolve(__dirname, './config.json')).then(() => true).catch(_ => false)
+        if (file) {
+            const config = require('./config.json')
+            const str = Object.entries(config).map(item => item.join(':')).join('\n')
+            console.log(chalk.green(str));
+        } else {
+            console.log(chalk.green('本地没有配置信息'));
+        }
     })
 
 program.parse(process.argv);
