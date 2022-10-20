@@ -3,7 +3,6 @@ const path = require('path')
 const log = require('./log')
 const clear = require('clear')
 const inquirer = require('inquirer')
-let config = require('../config')
 const resetConfig = async () => {
     const res = await inquirer.prompt([{
         name: 'username',
@@ -21,10 +20,11 @@ const resetConfig = async () => {
     for (const key in res) {
         res[key] = res[key].trim()
     }
+    let config = {}
     config.username = res.username
     config.key = res.key
     config.url = res.url
-    // fs.writeFileSync(path.resolve(__dirname, '../src/', 'config.json'), JSON.stringify(res))
+    fs.writeFileSync(path.resolve(__dirname, '../', 'config.json'), JSON.stringify(config))
     clear()
     log.info('success', 'Configuration reset!')
     return Promise.resolve(res)
