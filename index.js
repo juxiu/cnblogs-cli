@@ -40,18 +40,32 @@ program
         const cates = await getCategories()
         console.log(cates.filter(item => item.title.includes('[随笔分类]')).map(item => item.title).join('\n'));
     })
-// program
-//     .command('reset')
-//     .alias('r')
-//     .description('reset config')
-//     .action(async () => {
-//         const resetPassword = require('../lib/resetPassword')
-//         await resetPassword()
-//     })
+program
+    .command('reset')
+    .alias('r')
+    .description('reset config')
+    .action(async () => {
+        const resetConfig = require('./utils/resetConfig')
+        await resetConfig()
+    })
+program
+    .command('clear')
+    .alias('c')
+    .description('clear config')
+    .action(async () => {
+        const fs = require('fs')
+        const file = await fs.promises.access(path.resolve(__dirname, './config.json')).then(() => true).catch(_ => false)
+        if (file) {
+            fs.rmSync('./config.json')
+            console.log(chalk.green('本地配置已被清除'));
+        } else {
+            console.log(chalk.green('本地没有配置信息'));
+        }
+    })
 
 program
     .command('push [commit]')
-    .description('push')
+    .description('推送博客到博客园')
     .action(async (commit) => {
         const pushBlogs = require('./lib/pushBlogs')
         pushBlogs(commit)
